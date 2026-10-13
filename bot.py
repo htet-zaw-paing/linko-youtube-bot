@@ -54,13 +54,9 @@ def prepare_cookies_file() -> None:
 def download_mp3_sync(video_url: str, bitrate: str) -> dict:
     """Download the best available audio and convert it to MP3."""
     ydl_opts = {
-        # Do not force the obsolete/restricted YouTube TV client.
-        # yt-dlp's default client selection is maintained by yt-dlp itself.
+        # Let yt-dlp choose its currently supported YouTube clients.
         "format": "bestaudio/best",
         "outtmpl": "%(id)s.%(ext)s",
-        # Free fallback for public videos: this client currently does not
-        # require a PO token. It does not support account-cookie auth.
-        "extractor_args": {"youtube": {"player_client": ["android_vr"]}},
         "source_address": "0.0.0.0",
         "noplaylist": True,
         "quiet": False,
