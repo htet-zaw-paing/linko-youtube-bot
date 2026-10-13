@@ -58,6 +58,10 @@ def download_mp3_sync(video_url: str, bitrate: str) -> dict:
         "format": "bestaudio/best",
         "outtmpl": "%(id)s.%(ext)s",
         "source_address": "0.0.0.0",
+        # YouTube currently requires EJS challenge solving. The Dockerfile
+        # installs Node.js 22+, and these options enable it for yt-dlp.
+        "js_runtimes": {"node": {}},
+        "remote_components": ["ejs:github"],
         "noplaylist": True,
         "quiet": False,
         "no_warnings": False,
