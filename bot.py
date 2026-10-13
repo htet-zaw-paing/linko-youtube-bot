@@ -45,6 +45,7 @@ def prepare_cookies_file() -> None:
         print("YOUTUBE_COOKIES is not set; continuing without cookies", flush=True)
         return
 
+    # This also supports a Render variable containing literal backslash-n characters.
     cookies_text = cookies_text.replace("\\r\\n", "\n").replace("\\n", "\n")
     COOKIES_FILE.write_text(cookies_text, encoding="utf-8")
     print(f"YouTube cookies file created: {COOKIES_FILE}", flush=True)
@@ -53,16 +54,21 @@ def prepare_cookies_file() -> None:
 def download_mp3_sync(video_url: str, bitrate: str) -> dict:
     """Download the best available audio and convert it to MP3."""
     ydl_opts = {
+        # Do not force the obsolete/restricted YouTube TV client.
+        # yt-dlp's default client selection is maintained by yt-dlp itself.
         "format": "bestaudio/best",
         "outtmpl": "%(id)s.%(ext)s",
+        # Free fallback for public videos: this client currently does not
+        # require a PO token. It does not support account-cookie auth.
+        "extractor_args": {"youtube": {"player_client": ["android_vr"]}},
         "source_address": "0.0.0.0",
         "noplaylist": True,
         "quiet": False,
         "no_warnings": False,
         "verbose": True,
-        "retries": 3,
-        "extractor_retries": 3,
-        "fragment_retries": 3,
+        "retries": 1,
+        "extractor_retries": 1,
+        "fragment_retries": 1,
         "socket_timeout": 30,
         "sleep_interval_requests": 1,
         "postprocessors": [
